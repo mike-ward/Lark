@@ -1,6 +1,7 @@
 package views
 
 import (
+	"Lark/twitter"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
@@ -16,21 +17,27 @@ func GetPinContainer() *fyne.Container {
 
 	_getPin = _askPinContainer()
 	_acceptPin = _acceptPinContainer()
+	_gettingPinProgress = _gettingPinProgressContainer()
+
+	_acceptPin.Hide()
+	_gettingPinProgress.Hide()
 
 	_getPinContainer = container.NewPadded(
 		container.NewMax(
 			_getPin,
 			_acceptPin,
+			_gettingPinProgress,
 		),
 	)
 
 	return _getPinContainer
 }
 
-/* Privates (no peeking */
+/* Privates (no peeking) */
 
 var _getPin *fyne.Container
 var _acceptPin *fyne.Container
+var _gettingPinProgress *fyne.Container
 var _getPinContainer *fyne.Container
 
 func _askPinContainer() *fyne.Container {
@@ -49,12 +56,21 @@ func _askPinContainer() *fyne.Container {
 	)
 }
 
+func _gettingPinProgressContainer() *fyne.Container {
+	workingLabel := widget.NewLabel("Working...")
+	workingLabel.Alignment = fyne.TextAlignCenter
+
+	return container.NewVBox(
+		workingLabel,
+	)
+}
+
 func _acceptPinContainer() *fyne.Container {
 	labelInstructions := widget.NewLabel("Copy the PIN number from the browser into the box below and click the 'Sign in' button")
 	labelInstructions.Wrapping = fyne.TextWrapWord
 	labelInstructions.Alignment = fyne.TextAlignCenter
 
-	newContainer := container.NewVBox(
+	return container.NewVBox(
 		labelInstructions,
 		canvas.NewLine(color.Transparent),
 		container.NewHBox(
@@ -69,17 +85,20 @@ func _acceptPinContainer() *fyne.Container {
 			layout.NewSpacer(),
 		),
 	)
-
-	newContainer.Hide()
-	return newContainer
 }
 
 func _getPinTapped() {
 	_getPin.Hide()
+	_gettingPinProgress.Show()
+
+	twitter.LogIn()
+
+	_gettingPinProgress.Hide()
 	_acceptPin.Show()
 }
 
 func _startOverTapped() {
 	_getPin.Show()
 	_acceptPin.Hide()
+	_gettingPinProgress.Hide()
 }
