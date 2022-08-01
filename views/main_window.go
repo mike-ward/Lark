@@ -21,6 +21,6 @@ func MainWindow(app fyne.App) fyne.Window {
 		}
 
 	}))
-	
+
 	return window
 }

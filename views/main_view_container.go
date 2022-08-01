@@ -1,28 +1,20 @@
 package views
 
 import (
+	"Lark/views/toolbar_view"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
-	"fyne.io/fyne/v2/widget"
 )
 
-var _appTabContainer *fyne.Container
+var _toolbarContainer *fyne.Container
 
 func GetMainViewContainer() *fyne.Container {
-	if _appTabContainer != nil {
-		return _appTabContainer
+	if _toolbarContainer != nil {
+		return _toolbarContainer
 	}
 
-	_appTabContainer = container.NewMax(MyTabContainer())
-	return _appTabContainer
-}
+	_toolbarContainer = container.NewMax(
+		toolbar_view.GetToolbarContainer())
 
-func MyTabContainer() *fyne.Container {
-	radioGroup := widget.NewRadioGroup([]string{"A", "B", "C"}, nil)
-	radioGroup.Horizontal = true
-
-	return container.NewVBox(
-		radioGroup,
-		container.NewMax(),
-	)
+	return _toolbarContainer
 }
