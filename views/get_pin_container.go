@@ -1,10 +1,12 @@
 package views
 
 import (
+	"Lark/models"
 	"Lark/twitter"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/data/binding"
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
 	"image/color"
@@ -12,21 +14,21 @@ import (
 
 func GetPinContainer() *fyne.Container {
 	if _getPinContainer != nil {
+		_startOverTapped()
 		return _getPinContainer
 	}
 
 	_getPin = _askPinContainer()
 	_acceptPin = _acceptPinContainer()
-	_gettingPinProgress = _gettingPinProgressContainer()
+	_inProgress = _inProgressContainer()
 
-	_acceptPin.Hide()
-	_gettingPinProgress.Hide()
+	_startOverTapped()
 
 	_getPinContainer = container.NewPadded(
 		container.NewMax(
 			_getPin,
 			_acceptPin,
-			_gettingPinProgress,
+			_inProgress,
 		),
 	)
 
@@ -37,8 +39,10 @@ func GetPinContainer() *fyne.Container {
 
 var _getPin *fyne.Container
 var _acceptPin *fyne.Container
-var _gettingPinProgress *fyne.Container
+var _inProgress *fyne.Container
 var _getPinContainer *fyne.Container
+var _pin = binding.NewString()
+var _requestToken string
 
 func _askPinContainer() *fyne.Container {
 	labelInstructions := widget.NewLabel("Clicking the button below will open the browser to get a new PIN")
@@ -56,7 +60,7 @@ func _askPinContainer() *fyne.Container {
 	)
 }
 
-func _gettingPinProgressContainer() *fyne.Container {
+func _inProgressContainer() *fyne.Container {
 	workingLabel := widget.NewLabel("Working...")
 	workingLabel.Alignment = fyne.TextAlignCenter
 
@@ -76,8 +80,8 @@ func _acceptPinContainer() *fyne.Container {
 		container.NewHBox(
 			layout.NewSpacer(),
 			container.NewVBox(
-				widget.NewEntry(),
-				widget.NewButton("Sign in", nil),
+				widget.NewEntryWithData(_pin),
+				widget.NewButton("Sign in", _signIn),
 				canvas.NewLine(color.Transparent),
 				canvas.NewLine(color.Transparent),
 				widget.NewButton("Start over", _startOverTapped),
@@ -89,16 +93,34 @@ func _acceptPinContainer() *fyne.Container {
 
 func _getPinTapped() {
 	_getPin.Hide()
-	_gettingPinProgress.Show()
+	_inProgress.Show()
 
-	twitter.LogIn()
+	requestToken, _ := twitter.LogIn()
+	_requestToken = requestToken
 
-	_gettingPinProgress.Hide()
+	_inProgress.Hide()
 	_acceptPin.Show()
+}
+
+func _signIn() {
+	_acceptPin.Hide()
+	_inProgress.Show()
+
+	pin, _ := _pin.Get()
+	tokens, e := twitter.ReceivePIN(_requestToken, pin)
+
+	if e != nil {
+		_startOverTapped()
+		return
+	}
+
+	models.UpdateAccessTokens(tokens.Token, tokens.TokenSecret)
 }
 
 func _startOverTapped() {
 	_getPin.Show()
 	_acceptPin.Hide()
-	_gettingPinProgress.Hide()
+	_inProgress.Hide()
+	_requestToken = ""
+	_pin.Set("")
 }
