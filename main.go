@@ -12,7 +12,7 @@ func main() {
 	models.App.SetIcon(resources.AppIcon)
 
 	models.LoadAppSettings()
-	go models.TimelineFetch()
+	go models.HomeTimelineLoop()
 
 	mainWindow := views.MainWindow(models.App)
 	mainWindow.SetOnClosed(func() { models.SaveAppSettings() })

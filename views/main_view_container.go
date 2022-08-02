@@ -1,6 +1,7 @@
 package views
 
 import (
+	"Lark/models"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/theme"
@@ -26,6 +27,14 @@ func GetMainViewContainer() *fyne.Container {
 	top := container.NewVBox(
 		toolbar,
 		widget.NewSeparator())
+
+	go func() {
+		for {
+			<-models.DataUpdated
+			updateContentContainer(contentContainer, GetTimelineContainer())
+			contentContainer.Refresh()
+		}
+	}()
 
 	return container.NewBorder(
 		top,

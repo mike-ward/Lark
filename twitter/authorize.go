@@ -1,18 +1,19 @@
 package twitter
 
 import (
+	services "Lark/Services"
 	"github.com/dghubble/oauth1"
 	twAuth "github.com/dghubble/oauth1/twitter"
-	"os/exec"
-	"runtime"
 )
 
-const ConsumerKey = "ZScn2AEIQrfC48Zlw"
-const ConsumerSecret = "8gKdPBwUfZCQfUiyeFeEwVBQiV3q50wIOrIjoCxa2Q"
+const (
+	consumerKey    = "ZScn2AEIQrfC48Zlw"
+	consumerSecret = "8gKdPBwUfZCQfUiyeFeEwVBQiV3q50wIOrIjoCxa2Q"
+)
 
 var config = oauth1.Config{
-	ConsumerKey:    ConsumerKey,
-	ConsumerSecret: ConsumerSecret,
+	ConsumerKey:    consumerKey,
+	ConsumerSecret: consumerSecret,
 	CallbackURL:    "oob",
 	Endpoint:       twAuth.AuthorizeEndpoint,
 }
@@ -30,7 +31,7 @@ func LogIn() (requestToken string, err error) {
 		return "", err
 	}
 
-	openBrowser(authorizationURL.String())
+	services.OpenBrowser(authorizationURL.String())
 	return requestToken, err
 }
 
@@ -47,22 +48,4 @@ func ReceivePIN(requestToken string, verifier string) (*oauth1.Token, error) {
 	}
 
 	return oauth1.NewToken(accessToken, accessSecret), err
-}
-
-// openBrowser tries to open the URL in a browser,
-// and returns whether it succeed in doing so.
-func openBrowser(url string) bool {
-	var args []string
-
-	switch runtime.GOOS {
-	case "darwin":
-		args = []string{"open"}
-	case "windows":
-		args = []string{"cmd", "/c", "start"}
-	default:
-		args = []string{"xdg-open"}
-	}
-
-	cmd := exec.Command(args[0], append(args[1:], url)...)
-	return cmd.Start() == nil
 }

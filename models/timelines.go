@@ -1,39 +1,38 @@
 package models
 
 import (
-	twitter2 "Lark/twitter"
+	larkTwitter "Lark/twitter"
 	"fmt"
 	"github.com/dghubble/go-twitter/twitter"
-	"github.com/dghubble/oauth1"
 	"time"
 )
 
-var HomeTweets []twitter.Tweet
-var LikeTweets []twitter.Tweet
+var (
+	HomeTweets  []twitter.Tweet
+	LikeTweets  []twitter.Tweet
+	DataUpdated = make(chan bool)
+)
 
-func TimelineFetch() {
-	userTweets()
-	ticker := time.NewTicker(1 * time.Minute)
+func HomeTimelineLoop() {
+	getHomeTweets()
+	ticker := time.NewTicker(time.Minute)
 
 	for range ticker.C {
-		userTweets()
+		if isAuthenticated, _ := LarkSettings.IsAuthenticated.Get(); isAuthenticated {
+			getHomeTweets()
+		}
 	}
 }
 
-func userTweets() {
-	isAuthenticated, _ := LarkSettings.IsAuthenticated.Get()
+func getHomeTweets() {
+	yes := true
+	client := larkTwitter.GetTwitterClient(LarkSettings.AccessToken, LarkSettings.AccessTokenSecret)
+	tweets, resp, err := client.Timelines.HomeTimeline(&twitter.HomeTimelineParams{Count: 75, IncludeEntities: &yes})
 
-	if isAuthenticated {
-		config := oauth1.NewConfig(twitter2.ConsumerKey, twitter2.ConsumerSecret)
-		token := oauth1.NewToken(LarkSettings.AccessToken, LarkSettings.AccessTokenSecret)
-		httpClient := config.Client(oauth1.NoContext, token)
-		client := twitter.NewClient(httpClient)
-		tweets, resp, err := client.Timelines.HomeTimeline(&twitter.HomeTimelineParams{Count: 20})
-
-		if err == nil {
-			HomeTweets = tweets
-		} else {
-			fmt.Println(resp)
-		}
+	if err == nil {
+		HomeTweets = tweets
+		DataUpdated <- true
+	} else {
+		fmt.Println(resp)
 	}
 }
