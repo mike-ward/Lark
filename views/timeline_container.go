@@ -1,7 +1,6 @@
 package views
 
 import (
-	"Lark/models"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
@@ -9,10 +8,10 @@ import (
 	"github.com/dghubble/go-twitter/twitter"
 )
 
-func GetTimelineContainer() *fyne.Container {
+func GetTimelineContainer(tweets []twitter.Tweet) *fyne.Container {
 	vbox := container.NewVBox()
 
-	for _, tweet := range models.HomeTweets {
+	for _, tweet := range tweets {
 		vbox.Add(tweetWidget(tweet))
 	}
 

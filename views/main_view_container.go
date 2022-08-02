@@ -6,16 +6,19 @@ import (
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
+	"github.com/dghubble/go-twitter/twitter"
 )
 
 func GetMainViewContainer() *fyne.Container {
+	var homeTweets []twitter.Tweet
+	var likeTweets []twitter.Tweet
+
 	contentContainer := container.NewMax()
-	updateContentContainer(contentContainer, GetTimelineContainer())
 
 	toolbar := widget.NewToolbar(
-		widget.NewToolbarAction(theme.HomeIcon(), func() { updateContentContainer(contentContainer, GetTimelineContainer()) }),
+		widget.NewToolbarAction(theme.HomeIcon(), func() { updateContentContainer(contentContainer, GetTimelineContainer(homeTweets)) }),
 		widget.NewToolbarSpacer(),
-		widget.NewToolbarAction(theme.ConfirmIcon(), func() { updateContentContainer(contentContainer, GetTimelineContainer()) }),
+		widget.NewToolbarAction(theme.ConfirmIcon(), func() { updateContentContainer(contentContainer, GetTimelineContainer(likeTweets)) }),
 		widget.NewToolbarSpacer(),
 		widget.NewToolbarAction(theme.SearchIcon(), func() { updateContentContainer(contentContainer, GetSearchContainer()) }),
 		widget.NewToolbarSpacer(),
@@ -30,8 +33,8 @@ func GetMainViewContainer() *fyne.Container {
 
 	go func() {
 		for {
-			<-models.DataUpdated
-			updateContentContainer(contentContainer, GetTimelineContainer())
+			homeTweets = <-models.HomeTweets
+			updateContentContainer(contentContainer, GetTimelineContainer(homeTweets))
 			contentContainer.Refresh()
 		}
 	}()
