@@ -9,22 +9,46 @@ import (
 	"github.com/dghubble/go-twitter/twitter"
 )
 
+const (
+	HOME     int = 0
+	LIKE     int = 1
+	SEARCH   int = 2
+	SETTINGS int = 3
+	WRITE    int = 4
+)
+
 func GetMainViewContainer() *fyne.Container {
 	var homeTweets []twitter.Tweet
 	var likeTweets []twitter.Tweet
 
+	selected := HOME
 	contentContainer := container.NewMax()
 
 	toolbar := widget.NewToolbar(
-		widget.NewToolbarAction(theme.HomeIcon(), func() { updateContentContainer(contentContainer, GetTimelineContainer(homeTweets)) }),
+		widget.NewToolbarAction(theme.HomeIcon(), func() {
+			selected = HOME
+			updateContentContainer(contentContainer, GetTimelineContainer(homeTweets))
+		}),
 		widget.NewToolbarSpacer(),
-		widget.NewToolbarAction(theme.ConfirmIcon(), func() { updateContentContainer(contentContainer, GetTimelineContainer(likeTweets)) }),
+		widget.NewToolbarAction(theme.ConfirmIcon(), func() {
+			selected = LIKE
+			updateContentContainer(contentContainer, GetTimelineContainer(likeTweets))
+		}),
 		widget.NewToolbarSpacer(),
-		widget.NewToolbarAction(theme.SearchIcon(), func() { updateContentContainer(contentContainer, GetSearchContainer()) }),
+		widget.NewToolbarAction(theme.SearchIcon(), func() {
+			selected = SEARCH
+			updateContentContainer(contentContainer, GetSearchContainer())
+		}),
 		widget.NewToolbarSpacer(),
-		widget.NewToolbarAction(theme.SettingsIcon(), func() { updateContentContainer(contentContainer, GetSettingsContainer()) }),
+		widget.NewToolbarAction(theme.SettingsIcon(), func() {
+			selected = SETTINGS
+			updateContentContainer(contentContainer, GetSettingsContainer())
+		}),
 		widget.NewToolbarSpacer(),
-		widget.NewToolbarAction(theme.DocumentCreateIcon(), func() { updateContentContainer(contentContainer, GetWriteContainer()) }),
+		widget.NewToolbarAction(theme.DocumentCreateIcon(), func() {
+			selected = WRITE
+			updateContentContainer(contentContainer, GetWriteContainer())
+		}),
 	)
 
 	top := container.NewVBox(
@@ -34,8 +58,10 @@ func GetMainViewContainer() *fyne.Container {
 	go func() {
 		for {
 			homeTweets = <-models.HomeTweets
-			updateContentContainer(contentContainer, GetTimelineContainer(homeTweets))
-			contentContainer.Refresh()
+			if selected == HOME {
+				updateContentContainer(contentContainer, GetTimelineContainer(homeTweets))
+				contentContainer.Refresh()
+			}
 		}
 	}()
 
