@@ -23,9 +23,15 @@ func GetMainViewContainer() *fyne.Container {
 		widget.NewToolbarAction(theme.DocumentCreateIcon(), func() { updateContentContainer(contentContainer, GetWriteContainer()) }),
 	)
 
-	return container.NewVBox(
+	top := container.NewVBox(
 		toolbar,
-		widget.NewSeparator(),
+		widget.NewSeparator())
+
+	return container.NewBorder(
+		top,
+		nil,
+		nil,
+		nil,
 		contentContainer,
 	)
 }

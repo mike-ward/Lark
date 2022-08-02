@@ -13,25 +13,24 @@ import (
 )
 
 func GetPinContainer() *fyne.Container {
-	if _getPinContainer != nil {
+	if _getPinContainer == nil {
+
+		_getPin = _askPinContainer()
+		_acceptPin = _acceptPinContainer()
+		_inProgress = _inProgressContainer()
+
 		_startOverTapped()
-		return _getPinContainer
+
+		_getPinContainer = container.NewPadded(
+			container.NewMax(
+				_getPin,
+				_acceptPin,
+				_inProgress,
+			),
+		)
 	}
 
-	_getPin = _askPinContainer()
-	_acceptPin = _acceptPinContainer()
-	_inProgress = _inProgressContainer()
-
 	_startOverTapped()
-
-	_getPinContainer = container.NewPadded(
-		container.NewMax(
-			_getPin,
-			_acceptPin,
-			_inProgress,
-		),
-	)
-
 	return _getPinContainer
 }
 

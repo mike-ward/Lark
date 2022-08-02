@@ -6,6 +6,9 @@ import (
 	"fyne.io/fyne/v2/data/binding"
 )
 
+func init() {
+}
+
 func MainWindow(app fyne.App) fyne.Window {
 	window := app.NewWindow("Lark")
 	window.CenterOnScreen()

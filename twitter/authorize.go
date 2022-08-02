@@ -7,9 +7,12 @@ import (
 	"runtime"
 )
 
+const ConsumerKey = "ZScn2AEIQrfC48Zlw"
+const ConsumerSecret = "8gKdPBwUfZCQfUiyeFeEwVBQiV3q50wIOrIjoCxa2Q"
+
 var config = oauth1.Config{
-	ConsumerKey:    "ZScn2AEIQrfC48Zlw",
-	ConsumerSecret: "8gKdPBwUfZCQfUiyeFeEwVBQiV3q50wIOrIjoCxa2Q",
+	ConsumerKey:    ConsumerKey,
+	ConsumerSecret: ConsumerSecret,
 	CallbackURL:    "oob",
 	Endpoint:       twAuth.AuthorizeEndpoint,
 }
