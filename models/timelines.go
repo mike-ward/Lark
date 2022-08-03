@@ -8,12 +8,12 @@ import (
 )
 
 var (
-	HomeTweets chan []twitter.Tweet
-	LikeTweets chan []twitter.Tweet
+	HomeTweets chan *[]twitter.Tweet
+	LikeTweets chan *[]twitter.Tweet
 )
 
 func HomeTimelineLoop() {
-	HomeTweets = make(chan []twitter.Tweet)
+	HomeTweets = make(chan *[]twitter.Tweet)
 	getHomeTweets()
 
 	ticker := time.NewTicker(time.Minute)
@@ -31,7 +31,7 @@ func getHomeTweets() {
 	tweets, resp, err := client.Timelines.HomeTimeline(&twitter.HomeTimelineParams{Count: 75, IncludeEntities: &yes})
 
 	if err == nil {
-		HomeTweets <- tweets
+		HomeTweets <- &tweets
 	} else {
 		fmt.Println(resp)
 	}

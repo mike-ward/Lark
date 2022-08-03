@@ -8,13 +8,14 @@ import (
 	"github.com/dghubble/go-twitter/twitter"
 )
 
-func GetTimelineContainer(tweets []twitter.Tweet) *fyne.Container {
+func GetTimelineContainer(tweets *[]twitter.Tweet) *fyne.Container {
 	vbox := container.NewVBox()
 
-	for _, tweet := range tweets {
-		vbox.Add(tweetWidget(tweet))
+	if tweets != nil {
+		for _, tweet := range *tweets {
+			vbox.Add(tweetWidget(tweet))
+		}
 	}
-
 	return container.NewMax(container.NewVScroll(vbox))
 }
 

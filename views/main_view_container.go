@@ -18,8 +18,8 @@ const (
 )
 
 func GetMainViewContainer() *fyne.Container {
-	var homeTweets []twitter.Tweet
-	var likeTweets []twitter.Tweet
+	var homeTweets *[]twitter.Tweet
+	var likeTweets *[]twitter.Tweet
 
 	selected := HOME
 	contentContainer := container.NewMax()

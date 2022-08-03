@@ -3,12 +3,15 @@ module Lark
 go 1.18
 
 require (
-	fyne.io/fyne/v2 v2.2.3 // indirect
+	fyne.io/fyne/v2 v2.2.3
+	github.com/dghubble/go-twitter v0.0.0-20220716041154-837915ec2f79
+	github.com/dghubble/oauth1 v0.7.1
+)
+
+require (
 	fyne.io/systray v1.10.1-0.20220621085403-9a2652634e93 // indirect
 	github.com/cenkalti/backoff/v4 v4.1.3 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/dghubble/go-twitter v0.0.0-20220716041154-837915ec2f79 // indirect
-	github.com/dghubble/oauth1 v0.7.1 // indirect
 	github.com/dghubble/sling v1.4.0 // indirect
 	github.com/fredbi/uri v0.0.0-20181227131451-3dcfdacbaaf3 // indirect
 	github.com/fsnotify/fsnotify v1.5.4 // indirect
