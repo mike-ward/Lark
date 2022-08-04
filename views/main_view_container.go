@@ -19,20 +19,23 @@ const (
 
 func GetMainViewContainer() *fyne.Container {
 	var homeTweets *[]twitter.Tweet
-	var likeTweets *[]twitter.Tweet
+	//var likeTweets *[]twitter.Tweet
 
 	selected := HOME
+	homeTimeline := NewTimelineContainer(75)
+	likeTimeline := NewTimelineContainer(75)
+
 	contentContainer := container.NewMax()
 
 	toolbar := widget.NewToolbar(
 		widget.NewToolbarAction(theme.HomeIcon(), func() {
 			selected = HOME
-			updateContentContainer(contentContainer, GetTimelineContainer(homeTweets))
+			updateContentContainer(contentContainer, homeTimeline)
 		}),
 		widget.NewToolbarSpacer(),
 		widget.NewToolbarAction(theme.ConfirmIcon(), func() {
 			selected = LIKE
-			updateContentContainer(contentContainer, GetTimelineContainer(likeTweets))
+			updateContentContainer(contentContainer, likeTimeline)
 		}),
 		widget.NewToolbarSpacer(),
 		widget.NewToolbarAction(theme.SearchIcon(), func() {
@@ -59,7 +62,8 @@ func GetMainViewContainer() *fyne.Container {
 		for {
 			homeTweets = <-models.HomeTweets
 			if selected == HOME {
-				updateContentContainer(contentContainer, GetTimelineContainer(homeTweets))
+				UpdateTimelineContainer(homeTimeline, homeTweets)
+				updateContentContainer(contentContainer, homeTimeline)
 				contentContainer.Refresh()
 			}
 		}

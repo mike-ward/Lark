@@ -1,7 +1,7 @@
 package twitter
 
 import (
-	services "Lark/Services"
+	services "Lark/services"
 	"github.com/dghubble/oauth1"
 	twAuth "github.com/dghubble/oauth1/twitter"
 )
