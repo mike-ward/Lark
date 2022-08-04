@@ -64,6 +64,7 @@ func GetMainViewContainer() *fyne.Container {
 			homeTweets = <-models.HomeTweets
 			if selected == HOME {
 				updateTimeline(homeTimeline, homeTweets)
+				contentContainer.Refresh()
 			}
 		}
 	}()

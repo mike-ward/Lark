@@ -1,6 +1,7 @@
 package views
 
 import (
+	"Lark/services"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
@@ -14,6 +15,6 @@ func newTweetTextContainer() *fyne.Container {
 }
 
 func updateTweetText(c *fyne.Container, tweet *twitter.Tweet) {
-	text := c.Objects[0].(*widget.Label)
-	text.SetText(tweet.Text)
+	label := c.Objects[0].(*widget.Label)
+	label.SetText(services.HtmlDecode(tweet.FullText))
 }

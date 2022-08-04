@@ -3,6 +3,7 @@ package views
 import (
 	"Lark/models"
 	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/data/binding"
 )
 
@@ -18,11 +19,10 @@ func MainWindow(app fyne.App) fyne.Window {
 		isAuthenticated, _ := models.LarkSettings.IsAuthenticated.Get()
 
 		if isAuthenticated {
-			window.SetContent(GetMainViewContainer())
+			window.SetContent(container.NewPadded(GetMainViewContainer()))
 		} else {
-			window.SetContent(GetPinContainer())
+			window.SetContent(container.NewPadded(GetPinContainer()))
 		}
-
 	}))
 
 	return window

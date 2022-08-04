@@ -1,1 +1,1 @@
-fyne package -os windows  -icon ..\Loon\src\Loon\Assets\Logo\loon.png
+fyne package -os windows  -icon resources\lark.png

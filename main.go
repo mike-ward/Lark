@@ -10,6 +10,7 @@ import (
 func main() {
 	models.App = app.NewWithID("Lark-O-Matic")
 	models.App.SetIcon(resources.AppIcon)
+	models.App.Settings().SetTheme(resources.NewLarkTheme())
 
 	models.LoadAppSettings()
 	go models.HomeTimelineLoop()

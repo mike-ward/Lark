@@ -28,11 +28,15 @@ func HomeTimelineLoop() {
 func getHomeTweets() {
 	yes := true
 	client := larkTwitter.GetTwitterClient(LarkSettings.AccessToken, LarkSettings.AccessTokenSecret)
-	tweets, resp, err := client.Timelines.HomeTimeline(&twitter.HomeTimelineParams{Count: 75, IncludeEntities: &yes})
+	tweets, _, err := client.Timelines.HomeTimeline(&twitter.HomeTimelineParams{
+		Count:           75,
+		IncludeEntities: &yes,
+		TweetMode:       "extended",
+	})
 
 	if err == nil {
 		HomeTweets <- &tweets
 	} else {
-		fmt.Println(resp)
+		fmt.Println(err.Error())
 	}
 }
